@@ -19,34 +19,50 @@ from products.models import Product
 import json
 import re
 
+from django.db.models import Q
+
+from django.db.models import Q
+import json
+import re
+
+# Stopwords list (you can expand this)
+STOPWORDS = ['i', 'want', 'show', 'me', 'the', 'a', 'an', 'to', 'get', 'find']
+
 def query_bot(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         query = data.get('query', '').lower().strip()
 
-        print("Query received:", query)  # 👈 Debug: log the query in terminal
+        # Remove punctuation for better match
+        query_cleaned = re.sub(r'[^\w\s]', '', query)
 
-        # 🔍 Search across name, description, and category
+        # First attempt: Full query match
         products = Product.objects.filter(
-            Q(name__icontains=query) |
-            Q(description__icontains=query) |
-            Q(category__icontains=query)
+            Q(name__icontains=query_cleaned) |
+            Q(category__icontains=query_cleaned) |
+            Q(description__icontains=query_cleaned)
         )
 
-        # 💰 Handle "under 5000" type price query
-        price_match = re.search(r'under\s+(\d+)', query)
-        if price_match:
-            price_limit = int(price_match.group(1))
-            products = products.filter(price__lt=price_limit)
+        # Fallback: Tokenized smart search without stopwords
+        if not products.exists():
+            words = [word for word in query_cleaned.split() if word not in STOPWORDS]
+            q_object = Q()
+            for word in words:
+                q_object |= Q(name__icontains=word)
+                q_object |= Q(category__icontains=word)
+                q_object |= Q(description__icontains=word)
+            if words:
+                products = Product.objects.filter(q_object)
 
+        # Build bot response
         if products.exists():
-            response = ", ".join([
-                f"<a href='/chatbot/product/{p.id}/' target='_blank'>{p.name}</a>"
-                for p in products[:10]
-            ])
+            response = ", ".join(
+                [f"<a href='/chatbot/product/{p.id}/' target='_blank'>{p.name}</a>" for p in products]
+            )
         else:
             response = "❌ No matching products found. Try different keywords."
 
+        # Save chat
         ChatLog.objects.create(
             user=request.user if request.user.is_authenticated else None,
             user_query=query,
@@ -54,6 +70,8 @@ def query_bot(request):
         )
 
         return JsonResponse({'response': response})
+
+
 
 
 
