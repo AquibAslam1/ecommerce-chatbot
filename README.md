@@ -7,7 +7,7 @@ An intelligent, Django-based e-commerce chatbot that enables users to search for
 
 ## 🔍 Overview
 
-The **E-commerce Chatbot** integrates a dynamic chatbot interface into an online store platform. Users can type queries like _"show me phone"_ or _"find HP laptops"_ and instantly receive results with links to detailed product pages.
+The **E-commerce Chatbot** integrates a dynamic chatbot interface into an online store platform. Users can type queries like _"show me phone"_ or _"find HP laptops" _or_ "under 1000"_ and instantly receive results with links to detailed product pages.
 
 ---
 
@@ -137,6 +137,7 @@ for i in range(1, 101):
 - Ask product-related questions in natural language like:
   - _"show me redmi phones"_
   - _"laptop"_, _"headphones"_, _"books"_
+  - _"under 1000"_
 - Chatbot responds with **clickable product links**.
 - Click a link to view the **product detail page**.
 - View full **chat history** from the history tab.
