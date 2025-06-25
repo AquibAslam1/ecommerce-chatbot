@@ -31,38 +31,42 @@ STOPWORDS = ['i', 'want', 'show', 'me', 'the', 'a', 'an', 'to', 'get', 'find']
 def query_bot(request):
     if request.method == 'POST':
         data = json.loads(request.body)
-        query = data.get('query', '').lower().strip()
+        query = data.get('query', '').lower()
 
-        # Remove punctuation for better match
-        query_cleaned = re.sub(r'[^\w\s]', '', query)
+        # Start with all products
+        products = Product.objects.all()
 
-        # First attempt: Full query match
-        products = Product.objects.filter(
-            Q(name__icontains=query_cleaned) |
-            Q(category__icontains=query_cleaned) |
-            Q(description__icontains=query_cleaned)
-        )
+        # Filter by price (under/below X)
+        price_match = re.search(r'(under|below)\s*(\d+)', query)
+        if price_match:
+            price_limit = int(price_match.group(2))
+            products = products.filter(price__lt=price_limit)
 
-        # Fallback: Tokenized smart search without stopwords
-        if not products.exists():
-            words = [word for word in query_cleaned.split() if word not in STOPWORDS]
-            q_object = Q()
-            for word in words:
-                q_object |= Q(name__icontains=word)
-                q_object |= Q(category__icontains=word)
-                q_object |= Q(description__icontains=word)
-            if words:
-                products = Product.objects.filter(q_object)
+        # Filter by product name or category keywords
+        keywords = ['iphone', 'apple', 'redmi', 'oneplus', 'phone', 'mobile',
+                    'laptop', 'dell', 'hp', 'lenovo', 'asus',
+                    'book', 'books', 'headphone', 'earbuds', 'earphone', 'boat', 'sony',
+                    'watch']
 
-        # Build bot response
+        filtered = Product.objects.none()
+
+        for word in keywords:
+            if word in query:
+                filtered |= Product.objects.filter(name__icontains=word) | Product.objects.filter(category__icontains=word)
+
+        # If both filters applied
+        if price_match and filtered.exists():
+            products = products & filtered
+        elif filtered.exists():
+            products = filtered
+
+        # Return response
         if products.exists():
-            response = ", ".join(
-                [f"<a href='/chatbot/product/{p.id}/' target='_blank'>{p.name}</a>" for p in products]
-            )
+            response = ", ".join([f"<a href='/chatbot/product/{p.id}/' target='_blank'>{p.name}</a>" for p in products])
         else:
             response = "❌ No matching products found. Try different keywords."
 
-        # Save chat
+        # Save ChatLog
         ChatLog.objects.create(
             user=request.user if request.user.is_authenticated else None,
             user_query=query,
@@ -70,9 +74,6 @@ def query_bot(request):
         )
 
         return JsonResponse({'response': response})
-
-
-
 
 
 # 🛍️ Product Detail View
