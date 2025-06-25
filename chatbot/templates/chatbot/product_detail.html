@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>{{ product.name }}</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .bubbles {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: 0;
+    }
+
+    .bubbles span {
+      position: absolute;
+      display: block;
+      bottom: -150px;
+      width: 40px;
+      height: 40px;
+      background: rgba(0, 123, 255, 0.15);
+      border-radius: 50%;
+      animation: rise 20s linear infinite;
+    }
+
+    .bubbles span:nth-child(1) { left: 10%; animation-duration: 25s; }
+    .bubbles span:nth-child(2) { left: 20%; animation-duration: 18s; }
+    .bubbles span:nth-child(3) { left: 30%; animation-duration: 22s; }
+    .bubbles span:nth-child(4) { left: 40%; animation-duration: 26s; }
+    .bubbles span:nth-child(5) { left: 50%; animation-duration: 24s; }
+    .bubbles span:nth-child(6) { left: 60%; animation-duration: 21s; }
+    .bubbles span:nth-child(7) { left: 70%; animation-duration: 19s; }
+    .bubbles span:nth-child(8) { left: 80%; animation-duration: 23s; }
+    .bubbles span:nth-child(9) { left: 90%; animation-duration: 20s; }
+    .bubbles span:nth-child(10) { left: 100%; animation-duration: 27s; }
+
+    @keyframes rise {
+      0% { transform: translateY(0) scale(1); opacity: 0.25; }
+      100% { transform: translateY(-1000px) scale(1.4); opacity: 0; }
+    }
+
+    .product-container {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 0 10px #66e0f0, 0 0 20px #3399ff;
+      padding: 25px;
+      max-width: 600px;
+      width: 90%;
+      height: auto;
+      text-align: center;
+      z-index: 2;
+      animation: fadeIn 0.6s ease-in-out;
+      color: #ffffff;
+      margin: 2px 5px; 
+    }
+
+    .product-container h2 {
+      color: #66e0f0;
+      margin-bottom: 15px;
+      text-shadow: 0 0 1.5px #66e0f0;
+    }
+
+    .product-container img {
+      width: 100%;
+      max-height: 320px;
+      object-fit: contain;
+      border-radius: 12px;
+      margin-bottom: 25px;
+      transition: transform 0.4s ease;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .product-container img:hover {
+      transform: scale(1.05);
+    }
+
+    .product-info {
+      text-align: left;
+      font-size: 16px;
+      line-height: 1.6;
+      margin-top: 10px;
+    }
+
+    .product-info p {
+      margin: 10px 0;
+    }
+
+    .product-info strong {
+      display: inline-block;
+      width: 100px;
+      color: #cccccc;
+    }
+
+    .price {
+      font-size: 20px;
+      font-weight: bold;
+      color: #00c6ff;
+    }
+
+    .rating {
+      color: #f1c40f;
+      font-weight: bold;
+    }
+
+    .in-stock {
+      color: #00ffae;
+      font-weight: bold;
+    }
+
+    .out-of-stock {
+      color: #ff4d4d;
+      font-weight: bold;
+    }
+
+    .back-button {
+      display: inline-block;
+      margin-top: 25px;
+      padding: 12px 20px;
+      background: linear-gradient(to right, #007bff, #00c6ff);
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      transition: background 0.3s ease, box-shadow 0.3s ease;
+      font-size: 15px;
+      box-shadow: 0 0 6px #3399ff;
+    }
+
+    .back-button:hover {
+      background: linear-gradient(to right, #0056b3, #0095cc);
+      box-shadow: 0 0 10px #33ccff;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 600px) {
+      .product-container {
+        padding: 20px;
+      }
+
+      .product-info {
+        font-size: 15px;
+      }
+
+      .back-button {
+        padding: 10px 16px;
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 💫 Bubble Animation Background -->
+  <div class="bubbles">
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
+
+  <!-- 🛍️ Product Card -->
+  <div class="product-container">
+    <h2>{{ product.name }}</h2>
+    <img src="{{ product.image_url }}" alt="{{ product.name }}">
+    <div class="product-info">
+      <p><strong>Category:</strong> {{ product.category }}</p>
+      <p><strong>Price:</strong> <span class="price">₹{{ product.price }}</span></p>
+      <p><strong>Description:</strong> {{ product.description }}</p>
+      <p><strong>Rating:</strong> <span class="rating">⭐ {{ product.rating }}</span></p>
+      <p><strong>Status:</strong>
+        {% if product.stock %}
+          <span class="in-stock">In Stock</span>
+        {% else %}
+          <span class="out-of-stock">Out of Stock</span>
+        {% endif %}
+      </p>
+    </div>
+    <a href="/chatbot/" class="back-button">⬅ Back to Chat</a>
+  </div>
+
+</body>
+</html>

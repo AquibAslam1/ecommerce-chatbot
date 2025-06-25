@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .bubbles {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      overflow: hidden;
+      top: 0;
+      left: 0;
+    }
+
+    .bubbles span {
+      position: absolute;
+      display: block;
+      width: 30px;
+      height: 30px;
+      background: rgba(0, 123, 255, 0.15);
+      bottom: -150px;
+      animation: rise 20s infinite ease-in;
+      border-radius: 50%;
+    }
+
+    .bubbles span:nth-child(1) { left: 10%; width: 40px; height: 40px; animation-duration: 25s; }
+    .bubbles span:nth-child(2) { left: 20%; width: 20px; height: 20px; animation-duration: 18s; animation-delay: 2s; }
+    .bubbles span:nth-child(3) { left: 30%; width: 30px; height: 30px; animation-duration: 22s; animation-delay: 4s; }
+    .bubbles span:nth-child(4) { left: 40%; width: 25px; height: 25px; animation-duration: 20s; animation-delay: 6s; }
+    .bubbles span:nth-child(5) { left: 50%; width: 35px; height: 35px; animation-duration: 19s; animation-delay: 3s; }
+    .bubbles span:nth-child(6) { left: 60%; width: 15px; height: 15px; animation-duration: 17s; animation-delay: 1s; }
+    .bubbles span:nth-child(7) { left: 70%; width: 30px; height: 30px; animation-duration: 23s; animation-delay: 5s; }
+    .bubbles span:nth-child(8) { left: 80%; width: 25px; height: 25px; animation-duration: 24s; animation-delay: 7s; }
+    .bubbles span:nth-child(9) { left: 90%; width: 20px; height: 20px; animation-duration: 21s; animation-delay: 3s; }
+    .bubbles span:nth-child(10) { left: 100%; width: 35px; height: 35px; animation-duration: 26s; animation-delay: 6s; }
+
+    @keyframes rise {
+      0% { transform: translateY(0) scale(1); opacity: 0.5; }
+      50% { opacity: 0.2; }
+      100% { transform: translateY(-1000px) scale(1.2); opacity: 0; }
+    }
+
+    .login-box {
+      position: relative;
+      z-index: 1;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      color: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 10px #66e0f0, 0 0 20px #3399ff;
+      width: 90%;
+      max-width: 400px;
+    }
+
+    .login-box h2 {
+      text-align: center;
+      color: #66e0f0;
+      margin-bottom: 20px;
+      text-shadow: 0 0 1.5px #66e0f0;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    form input[type="text"],
+    form input[type="password"] {
+      padding: 12px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+      border: 1px solid #00c6ff;
+      font-size: 15px;
+      background: #1c1c1c;
+      color: white;
+      outline: none;
+      transition: 0.2s;
+    }
+
+    form input:focus {
+      border-color: #66e0f0;
+      box-shadow: 0 0 6px #66e0f0;
+    }
+
+    button[type="submit"] {
+      padding: 12px;
+      background: linear-gradient(to right, #007bff, #00c6ff);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+      box-shadow: 0 0 6px #3399ff;
+    }
+
+    button[type="submit"]:hover {
+      background: linear-gradient(to right, #0056b3, #0095cc);
+      box-shadow: 0 0 10px #33ccff;
+    }
+
+    .signup-link {
+      margin-top: 15px;
+      text-align: center;
+      font-size: 14px;
+      color: #ccc;
+    }
+
+    .signup-link a {
+      color: #66e0f0;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .signup-link a:hover {
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Background bubbles -->
+<div class="bubbles">
+  <span></span><span></span><span></span><span></span><span></span>
+  <span></span><span></span><span></span><span></span><span></span>
+</div>
+
+<!-- Login box -->
+<div class="login-box">
+  <h2>🔐 Login</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Login</button>
+  </form>
+  <div class="signup-link">
+    <p>Don't have an account? <a href="/accounts/signup/">Signup here</a></p>
+  </div>
+</div>
+
+</body>
+</html>

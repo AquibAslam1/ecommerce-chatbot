@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Chatbot</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .bubbles {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      overflow: hidden;
+      top: 0;
+      left: 0;
+    }
+
+    .bubbles span {
+      position: absolute;
+      display: block;
+      width: 30px;
+      height: 30px;
+      background: rgba(0, 123, 255, 0.2);
+      bottom: -150px;
+      animation: rise 20s infinite ease-in;
+      border-radius: 50%;
+    }
+
+    .bubbles span:nth-child(1) { left: 10%; width: 40px; height: 40px; animation-duration: 25s; }
+    .bubbles span:nth-child(2) { left: 20%; width: 20px; height: 20px; animation-duration: 18s; animation-delay: 2s; }
+    .bubbles span:nth-child(3) { left: 30%; width: 30px; height: 30px; animation-duration: 22s; animation-delay: 4s; }
+    .bubbles span:nth-child(4) { left: 40%; width: 25px; height: 25px; animation-duration: 20s; animation-delay: 6s; }
+    .bubbles span:nth-child(5) { left: 50%; width: 35px; height: 35px; animation-duration: 19s; animation-delay: 3s; }
+    .bubbles span:nth-child(6) { left: 60%; width: 15px; height: 15px; animation-duration: 17s; animation-delay: 1s; }
+    .bubbles span:nth-child(7) { left: 70%; width: 30px; height: 30px; animation-duration: 23s; animation-delay: 5s; }
+    .bubbles span:nth-child(8) { left: 80%; width: 25px; height: 25px; animation-duration: 24s; animation-delay: 7s; }
+    .bubbles span:nth-child(9) { left: 90%; width: 20px; height: 20px; animation-duration: 21s; animation-delay: 3s; }
+    .bubbles span:nth-child(10) { left: 100%; width: 35px; height: 35px; animation-duration: 26s; animation-delay: 6s; }
+
+    @keyframes rise {
+      0% { transform: translateY(0) scale(1); opacity: 0.6; }
+      50% { opacity: 0.3; }
+      100% { transform: translateY(-1000px) scale(1.2); opacity: 0; }
+    }
+
+    h2 {
+      margin-top: 30px;
+      color: #66e0f0;
+      text-shadow: 0 0 2px #66e0f0;
+      font-weight: 600;
+      z-index: 2;
+    }
+
+
+    #chatbox {
+      width: 95%;
+      max-width: 600px;
+      background: rgba(0, 0, 0, 0.6);
+      margin-top: 20px;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 0 10px #66e0f0, 0 0 20px #3399ff;
+      display: flex;
+      flex-direction: column;
+      z-index: 2;
+      backdrop-filter: blur(10px);
+    }
+
+    #messages {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      padding: 15px;
+      height: 400px;
+      overflow-y: auto;
+      margin-bottom: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      border: 1px solid #00c6ff;
+    }
+
+    .message {
+      padding: 10px 14px;
+      border-radius: 18px;
+      max-width: 80%;
+      word-wrap: break-word;
+      line-height: 1.4;
+      animation: slideFadeIn 0.4s ease;
+    }
+
+    .user {
+      align-self: flex-end;
+      background: linear-gradient(to right, #007bff, #00c6ff);
+      color: white;
+      box-shadow: 0 0 6px #00c6ff;
+    }
+
+    .bot {
+      align-self: flex-start;
+      background: #5f2c82; /* Deep violet */
+      color: #ffffff;
+      border: 1px solid #8854d0;
+      box-shadow: 0 0 6px #9b59b6;
+    }
+
+
+
+    #input-area {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    #query {
+      flex: 1;
+      padding: 12px;
+      font-size: 16px;
+      border-radius: 10px;
+      border: 1px solid #00c6ff;
+      outline: none;
+      background: #1c1c1c;
+      color: #fff;
+      transition: 0.2s;
+    }
+
+    #query:focus {
+      border-color: #66e0f0;
+      box-shadow: 0 0 6px #66e0f0;
+    }
+
+    button {
+      padding: 10px 16px;
+      font-size: 15px;
+      border: none;
+      border-radius: 8px;
+      background: linear-gradient(to right, #007bff, #00c6ff);
+      color: white;
+      cursor: pointer;
+      transition: 0.3s ease;
+      box-shadow: 0 0 6px #3399ff;
+    }
+
+    button:hover {
+      background: linear-gradient(to right, #0056b3, #0095cc);
+      box-shadow: 0 0 10px #33ccff;
+    }
+
+    .reset-btn {
+      background: linear-gradient(to right, #ff6b6b, #ff9472);
+      color: white;
+      box-shadow: 0 0 5px #ff6b6b;
+    }
+
+    .reset-btn:hover {
+      background: linear-gradient(to right, #cc4444, #ff7e66);
+      box-shadow: 0 0 8px #ff7e66;
+    }
+
+    a {
+      color: #66e0f0;
+      text-decoration: underline;
+    }
+
+    .chat-history-link {
+      font-size: 15px;
+      font-weight: 700;
+      color: #66e0f0;
+      text-shadow: 0 0 1.5px #66e0f0; /* Softer glow */
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+
+    .chat-history-link:hover {
+      color: #ffffff;
+    }
+
+    @media (max-width: 600px) {
+      #chatbox {
+        padding: 15px;
+      }
+
+      #query {
+        font-size: 15px;
+      }
+
+      button {
+        font-size: 14px;
+        padding: 8px 12px;
+      }
+    }
+
+    @keyframes slideFadeIn {
+      0% { transform: translateY(15px); opacity: 0; }
+      100% { transform: translateY(0px); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Background Bubbles -->
+  <div class="bubbles">
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
+
+  <h2>💬 E-commerce Chatbot</h2>
+
+  {% if user.is_authenticated %}
+  <div style="z-index: 2; margin-top: 10px;">
+    <p style="color:#fff;">👤 Logged in as <strong>{{ request.user.username }}</strong> |
+      <a href="{% url 'login' %}">Logout</a>
+    </p>
+  </div>
+  {% endif %}
+
+  <div id="chatbox">
+    <div id="messages"></div>
+    <div id="input-area">
+      <input type="text" id="query" placeholder="Ask me anything..." />
+      <button onclick="sendMessage()">Send</button>
+      <button class="reset-btn" onclick="resetChat()">Reset</button>
+    </div>
+  </div>
+
+  <div style="margin-top: 7px; z-index: 2;">
+    <a href="{% url 'chat_history' %}" class="chat-history-link">🕓 View Chat History</a>
+  </div>
+
+  <script>
+    function sendMessage() {
+      let query = document.getElementById('query').value.trim();
+      if (!query) return;
+
+      const userMsg = document.createElement("div");
+      userMsg.classList.add("message", "user");
+      userMsg.innerHTML = `<strong>You:</strong> ${query}`;
+      document.getElementById("messages").appendChild(userMsg);
+
+      fetch("/chatbot/query/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": '{{ csrf_token }}'
+        },
+        body: JSON.stringify({ query: query })
+      })
+      .then(response => response.json())
+      .then(data => {
+        const botMsg = document.createElement("div");
+        botMsg.classList.add("message", "bot");
+        botMsg.innerHTML = `<strong>Bot:</strong> ${data.response}`;
+        document.getElementById("messages").appendChild(botMsg);
+        document.getElementById("query").value = "";
+        document.getElementById("messages").scrollTop = document.getElementById("messages").scrollHeight;
+      });
+    }
+
+    function resetChat() {
+      document.getElementById('messages').innerHTML = '';
+    }
+  </script>
+</body>
+</html>

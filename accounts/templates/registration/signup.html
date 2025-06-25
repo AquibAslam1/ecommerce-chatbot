@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Signup</title>
+  <style>
+    /* 1) make padding count inside width */
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow: hidden;
+      position: relative;
+      color: #fff;
+    }
+
+    .bubbles { /* unchanged */ }
+    .bubbles span { /* unchanged */ }
+    @keyframes rise { /* unchanged */ }
+
+    .signup-box {
+      position: relative;
+      z-index: 1;
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(12px);
+      border-radius: 16px;
+      padding: 30px;            /* symmetric padding */
+      width: 90%;
+      max-width: 420px;
+      box-shadow: 0 0 12px #66e0f0, 0 0 20px #3399ff;
+    }
+
+    .signup-box h2 {
+      text-align: center;
+      color: #66e0f0;
+      margin-bottom: 25px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;     /* children span full width */
+    }
+
+    form label {
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+
+    form input {
+      width: 100%;              /* full width minus container padding */
+      padding: 12px;
+      margin-bottom: 18px;
+      border-radius: 8px;
+      border: 1px solid #00c6ff;
+      background: #1c1c1c;
+      color: #fff;
+      font-size: 15px;
+      outline: none;
+      transition: 0.2s;
+    }
+
+    form input:focus {
+      border-color: #66e0f0;
+      box-shadow: 0 0 6px #66e0f0;
+    }
+
+    small.help {
+      font-size: 13px;
+      color: #aaa;
+      margin-top: -14px;
+      margin-bottom: 18px;
+      display: block;
+    }
+
+    button {
+      width: 100%;              /* full width */
+      padding: 14px;
+      background: linear-gradient(to right, #007bff, #00c6ff);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+      margin: 0;                /* no extra horizontal margin */
+    }
+
+    button:hover {
+      background: linear-gradient(to right, #0056b3, #0095cc);
+    }
+
+    .login-link {
+      margin-top: 16px;
+      text-align: center;
+      font-size: 14px;
+    }
+    .login-link a {
+      color: #00c6ff;
+      text-decoration: none;
+    }
+    .login-link a:hover {
+      color: #fff;
+    }
+
+    @media (max-width: 500px) {
+      .signup-box {
+        padding: 20px;
+      }
+      form input {
+        margin-bottom: 16px;
+      }
+      button {
+        padding: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="bubbles">
+    <span></span><!-- …total 10 spans -->
+  </div>
+
+  <div class="signup-box">
+    <h2>📝 Signup</h2>
+    <form method="post">
+      {% csrf_token %}
+
+      <label for="{{ form.username.id_for_label }}">Username</label>
+      {{ form.username }}
+      <small class="help">150 characters or fewer. Letters, digits and @/./+/-/_ only.</small>
+
+      <label for="{{ form.password1.id_for_label }}">Password</label>
+      {{ form.password1 }}
+
+      <label for="{{ form.password2.id_for_label }}">Confirm Password</label>
+      {{ form.password2 }}
+      <small class="help">Enter the same password as before, for verification.</small>
+
+      <button type="submit">Signup</button>
+    </form>
+    <div class="login-link">
+      Already have an account? <a href="/accounts/login/">Login here</a>
+    </div>
+  </div>
+</body>
+</html>
